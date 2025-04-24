@@ -1,0 +1,179 @@
+﻿Exercise Linux (voluntary) Group 1_3
+I. Basic shell commands (16 points)
+
+
+1. Open a Linux-terminal. In which directory are you when you open a new terminal? With which Unix-command do you find out the directory you are currently in? (Unix-shell and terminal) [1 Point]
+Ans:  /home/User/ (from terminal in a Linux OS), user@jupyter-user:~ (from jupyter hub), command: pwd
+
+
+2. How do you find out which Linux-shell you are working with? (echo command and SHELL variable) [1 Point]
+Ans: echo $SHELL
+Output: /bin/bash
+ 
+3. How would you launch the text-editor emacs in a way that you can continue to use your shell while the emacs is running? ( foreground and background jobs) [1 Point]
+Ans: command: emacs & (this will run Emacs as background job, whithout & then will run it as a foreground job)
+
+
+4. Launch your favorite text-editor (not necessarily emacs) and create a file me.txt containing your name. (usage of text editor) [0 Points, as this is a preparation for the next tasks, you need not to write anything!]
+Ans: nano
+
+
+5. After finishing the file me.txt and closing your editor: Create a new subdirectory test1 in your home directory (Unix file-system commands) [1 Point]
+Ans: mkdir test1
+
+
+6. Copy the file me.txt into the subdirectory as me_copy.txt (file copy-command) [1 Point]
+Ans: cp me.txt test1/me_copy.txt
+
+
+7. Does your copy-operation from the previous-command use a relative or an absolute path for the target-directory? (absolute and relative paths) [1 Point]
+Ans: It is a relative path
+
+
+8.  Use the cd-command to move between your home-directory and the subdiretory (Unix file-system commands) ]1 Point]
+Ans: cd test1/  (To move in test1), cd (to return to home directory)
+
+
+9. Rename the copy me_copy.txt to me_renames.txt while being in your home-directory (absolute and relative paths) [1 Point]
+Ans: mv test1/me_copy.txt test1/me_renames.txt (relative path since test1 was created in the home directory).
+
+
+10. Using echo and a redirection of the standard output, add your date of birth at the end of the copy me_copy.txt (redirection of STDOUT to a file) [1 Point]
+Note: me_copy no longer exists since the file was renamed to me_renames.txt in the last step. We are going to change the name again to me_copy.txt
+Ans: mv test1/me_renames.txt test1/me_copy.txt
+echo "13.07.1998">> test1/me_copy.txt
+
+
+11. Use the diff-command to compare the two files me.txt and me_copy.txt. If you did not yet use the diff-command, then look it up on the internet. Understanding its output is very useful in many circumstances! [1 Point]
+Ans: diff me.txt test1/me_copy.txt
+Output: 1a2 (#Means that after line 1 we need to add line number 2 in the first file) 
+> 13.07.1998
+
+
+12. Use the ls-command (with appropriate options) to show me.txt and me_copy.txt together with their file sizes. Can you tell why the file-size difference is what it is? (command-line options) [1 Point]
+Ans: ls -l me.txt test1/me_copy.txt
+Output: -rw-r--r-- 1 User Domain Users 12(this is file size in bytes) Apr 24 08:47 me.txt
+-rw-r--r-- 1 User Domain Users 23(this is file size in bytes) Apr 24 09:37 test1/me_copy.txt
+
+
+–l – displays a list of files and directories in long format and shows the sizes in bytes.
+–h – scales file sizes and directory sizes into KB, MB, GB, or TB when the file or directory size is larger than 1024 bytes.
+–s – displays a list of the files and directories and shows the sizes in blocks.
+
+
+13. Except for our Online-system, your Uni-ID credentials are also valid for the computers within the Physics computer pool (CIP-pool). The name of the CIP-pool machine you can login is `cip-pool.physik.uni-bonn.de`. Use the `ssh`-command to login into that machine. On the CIP-pool machine, create a subdirectory `python_course` and logout from the machine again.
+Ans:
+ssh user@cip-pool.physik.uni-bonn.de
+user@cip-pool.physik.uni-bonn.de's password: 
+user@cip005:~$ mkdir python_course
+user@cip005:~$ exit
+logout
+Connection to cip-pool.physik.uni-bonn.de closed.
+
+
+14. Use the command `scp` to copy the files ```me.txt``` and ```me_copy.txt``` into the `python_course`-subdirectory on the CIP-pool machine.
+Ans:
+user@jupyter-user:~/python_SS2025$scp me.txt test1/me_copy.txt user@cip-pool.physik.uni-bonn.de:/home/user/physik/python_course/
+user@cip-pool.physik.uni-bonn.de's password: 
+me.txt                                                             100%   15     0.1KB/s   00:00    
+me_copy.txt                                                     100%   29     0.3KB/s   00:00    
+
+
+15. Delete the subdirectory ```test1``` and the copy of ```me.txt``` in it. Can you do this with a single command? *(Unix file-system commands)* [1 Point]
+Ans:  rm -r test1
+
+
+16. Put two copies of ```me.txt``` (choose your own file names) into a new subdirectory ```test2```. Use the ```tar```-command to backup that directory to ```test2.tar.gz``` *(```tar```-command and archive-files)* [1 Point]
+Ans:
+mkdir test2
+cp me.txt test2/me_copy1.txt
+cp me.txt test2/me_copy2.txt
+backup:
+tar -czvf test2.tar.gz test2
+test2/
+test2/me_copy1.txt
+test2/me_copy2.txt
+
+
+17. Use ```tar``` to restore the contents of ```test2.tar.gz``` into a sub-directory ```test3``` *(```tar```-command)* [1 Point]
+Ans:
+mkdir test3
+tar -xzvf test2.tar.gz -C test3
+
+
+II. More complex shell usage
+
+
+1. Make two files, test.txt containing some text, and test.dat containing the text test.txt. What command line is required to use test.dat to print the contents of test.txt? (command line substituion) [3 Points]
+Ans: echo "This is a text">test.txt #Make text file
+echo "test.txt">test.dat #Creates .dat file with the content of test.txt
+cat $(cat test.dat) #print
+
+
+2. Make a file containing two columns of numbers. Use awk to print out the sum of each row. Use awk to print the sum of each column. (awk-command) [3 Points]
+Ans: cat > numbers.txt <<EOF
+> 3 7
+> 2 5
+> 1 4
+> 6 3
+> 8 9
+> EOF
+awk '{print $1 + $2 }' numbers.txt
+Output:
+10
+7
+5
+9
+17
+
+
+3. Sort the output of the previous exercise (numeric sort) on the first and then the second columns. (sort-command) [3 Points]
+Ans: sort -n -k1,1 -k2,2 numbers.txt #First column 1 will be sorted, if column 1 contain the same number, then column will be sorted. 
+Ouput:
+1 4
+2 5
+3 7
+6 3
+8 9
+
+
+4. Use the find command to find all files called *.txt in your home directory and all its subdirectories. (find-command) [3 Points]
+Ans: find ~ -type f -name "*.txt"
+
+
+5. Count the total number of files returned in the last task. (pipeline between find-command and wc-command) [3 Points]
+Ans: find ~ -type f -name "*.txt" | wc -l
+Output: a number
+
+
+6. Write a shell script to take a list of files and print the file names sorted according to their file size (ascending order). [3 Points]
+---script---
+#!/bin/bash
+if [ $# -eq 0 ]; then
+        echo "Insert list of files"
+        exit 1
+fi
+#Using ls to list files with their sizes, sorted by size (ascending). Numbers inside print will depend on the location of names and sizes in the string.
+ls -l "$@" | awk '{print $6, $10}' | sort -k2n
+----finish of the script-------
+Command: chmod +x sort_files_by_size.sh #Make the script executable
+./script.sh file1.txt file2.txt file3.txt #Run the script
+
+
+7. Write down a `for`-loop to rename all text files in the current diretory. All files having the ending `.txt` should have the ending `*.txt.old` after the operation. [3 Points]
+Ans:
+for file in *.txt; do
+  if [ -f "$file" ]; then
+    mv "$file" "$file.old"
+  fi
+done
+
+
+8. Write down a `for`-loop to reverse the operation from (7). [3 Points]
+Ans:
+for file in *.txt.old; do
+  if [ -f "$file" ]; then
+    name="${file%.txt.old}"
+    mv "$file" "$name.txt"
+  fi
+done
